@@ -8,6 +8,7 @@ type AmountWithCurrencyProps = {
   onSetCurrency: (e: React.ChangeEvent<HTMLSelectElement>) => void
   onAmountChanged?: (e: React.ChangeEvent<HTMLInputElement>) => void
   isAmountInputDisabled?: boolean
+  isProcessing: boolean
   id: string
 }
 
@@ -18,6 +19,7 @@ export const AmountWithCurrency = ({
   onSetCurrency,
   onAmountChanged = () => {},
   isAmountInputDisabled,
+  isProcessing,
   id,
 }: AmountWithCurrencyProps) => {
   return (
@@ -30,7 +32,8 @@ export const AmountWithCurrency = ({
           id={`${id}-amount-input`}
           aria-label={`insert ${id} amount`}
           className={clsx('h-6 px-2 bg-white rounded-sm', {
-            'bg-green-200': isAmountInputDisabled,
+            '!bg-green-200': isAmountInputDisabled,
+            'bg-gray-200': isProcessing,
           })}
           disabled={isAmountInputDisabled}
           onChange={onAmountChanged}
@@ -44,7 +47,10 @@ export const AmountWithCurrency = ({
         <select
           id={`${id}-currency-selector`}
           aria-label={`select-${id}-currency`}
-          className="h-6 px-1 rounded-sm focus:outline-none"
+          className={clsx('h-6 px-1 rounded-sm focus:outline-none', {
+            'bg-gray-200': isProcessing,
+          })}
+          disabled={isProcessing}
           onChange={onSetCurrency}
           value={selectedCurrency?.short_code}
         >

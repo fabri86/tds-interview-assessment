@@ -1,26 +1,18 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import clsx from 'clsx'
+
 import { useCurrencies } from '../hooks/use-currencies'
 import { AmountWithCurrency } from './amount-with-currency'
+import { useCurrencyConverter } from '../hooks/use-currency-converter'
 import { Currency } from '../types/currency.types'
 
-type CurrencyExchangeProps = {
-  convertedAmount?: string
-}
-
-export const CurrencyExchange = ({ convertedAmount = '' }: CurrencyExchangeProps) => {
-  const { currencies, isLoading, error } = useCurrencies()
+export const CurrencyExchange = () => {
+  const { currencies, isLoading, error: loadingError } = useCurrencies()
+  const { convertCurrency, isProcessing, error, result } = useCurrencyConverter()
 
   const [fromAmount, setFromAmount] = useState<string>('')
   const [selectedFromCurrency, setSelectedFromCurrency] = useState<Currency | null>(null)
   const [selectedToCurrency, setSelectedToCurrency] = useState<Currency | null>(null)
-
-  if (isLoading) {
-    return <p className="h-full text-xl text-white">Loading...</p>
-  }
-
-  if (error) {
-    return <p className="h-full text-xl text-red-400">Error: {error}</p>
-  }
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value as string
@@ -49,9 +41,33 @@ export const CurrencyExchange = ({ convertedAmount = '' }: CurrencyExchangeProps
   }
 
   const onCurrencyExchangeRun = () => {
-    alert('clicked')
+    if (!selectedFromCurrency || !selectedToCurrency) {
+      return alert('Please select currencies')
+    }
 
-    // TODO: Api convert call
+    const parsedAmount = fromAmount ? Number.parseFloat(fromAmount) : ''
+
+    if (!parsedAmount) {
+      return alert('Please insert a valid amount')
+    }
+
+    convertCurrency({
+      amount: parsedAmount,
+      fromCurrency: selectedFromCurrency.short_code,
+      toCurrency: selectedToCurrency.short_code,
+    })
+  }
+
+  useEffect(() => {
+    console.log({ result })
+  }, [result])
+
+  if (isLoading) {
+    return <p className="h-full text-xl text-white">Loading...</p>
+  }
+
+  if (loadingError) {
+    return <p className="h-full text-xl text-red-400">Error: {error}</p>
   }
 
   return (
@@ -59,6 +75,7 @@ export const CurrencyExchange = ({ convertedAmount = '' }: CurrencyExchangeProps
       <AmountWithCurrency
         id="from"
         amount={fromAmount}
+        isProcessing={isProcessing}
         selectedCurrency={selectedFromCurrency}
         currencies={currencies}
         onSetCurrency={handleCurrencyFromChanged}
@@ -67,18 +84,22 @@ export const CurrencyExchange = ({ convertedAmount = '' }: CurrencyExchangeProps
 
       <AmountWithCurrency
         id="to"
-        amount={convertedAmount}
+        amount={result?.convertedAmount.toString() || ''}
         isAmountInputDisabled={true}
+        isProcessing={isProcessing}
         selectedCurrency={selectedToCurrency}
         currencies={currencies}
         onSetCurrency={handleCurrencyToChanged}
       />
 
       <button
-        className="w-24 mt-6 text-white bg-orange-400 rounded-md"
+        className={clsx('w-24 mt-6 text-white bg-orange-400 rounded-md', {
+          'bg-gray-300': isProcessing,
+        })}
         onClick={onCurrencyExchangeRun}
+        disabled={isProcessing}
       >
-        CONVERT
+        {isProcessing ? 'Converting' : 'CONVERT'}
       </button>
     </div>
   )

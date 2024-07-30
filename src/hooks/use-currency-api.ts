@@ -17,7 +17,7 @@ interface IApiResponse {
 export const useCurrenciesApi = ({ apiKey }: UseCurrencyApiParams) => {
   const [currencies, setCurrencies] = useState<Currency[]>([])
   const [isLoading, setIsLoading] = useState<boolean>(true)
-  const [error, setError] = useState<string | null>(null)
+  const [loadingError, setLoadingError] = useState<string | null>(null)
 
   useEffect(() => {
     const fetchCurrencies = async () => {
@@ -35,7 +35,9 @@ export const useCurrenciesApi = ({ apiKey }: UseCurrencyApiParams) => {
 
         setCurrencies(response.data.response)
       } catch (error) {
-        setError('An error occurred while fetching currencies')
+        setLoadingError(
+          'An error occurred while fetching currencies. Please reload the app and try again'
+        )
       } finally {
         setIsLoading(false)
       }
@@ -44,5 +46,5 @@ export const useCurrenciesApi = ({ apiKey }: UseCurrencyApiParams) => {
     fetchCurrencies()
   }, [apiKey])
 
-  return { currencies, isLoading, error }
+  return { currencies, isLoading, error: loadingError }
 }
