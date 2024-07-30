@@ -7,7 +7,7 @@ function App() {
   const currencyApiKey = APP_CONFIGS.API_KEY
 
   return (
-    <div className="flex flex-col justify-center h-screen p-10 bg-gray-700">
+    <div className="h-screen p-8 bg-gray-700">
       <h1 className="my-4 text-2xl text-blue-200">Currency exchange</h1>
 
       <CurrenciesProvider apiKey={currencyApiKey}>
