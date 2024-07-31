@@ -2,16 +2,17 @@ import { toast } from 'react-toastify'
 import { useCallback, useEffect, useState } from 'react'
 import clsx from 'clsx'
 
-import { useCurrencies } from '../hooks/use-currencies'
+import { useCurrencyContext } from '../hooks/use-currency-context'
 import { AmountWithCurrency } from './amount-with-currency'
 import { useCurrencyConverter } from '../hooks/use-currency-converter'
 import { AmountWithCurrencySelectorIds, Currency } from '../types/currency.types'
 
+// Utility func to keep it DRY and facilitate unit testing
 const findCurrency = (currencies: Currency[], currencyShortCode: string): Currency | undefined =>
   currencies.find((currency) => currency.short_code === currencyShortCode)
 
 export const CurrencyExchange = () => {
-  const { currencies, isLoading, error: loadingError } = useCurrencies()
+  const { currencies, isLoading, error: loadingError } = useCurrencyContext()
   const { convertCurrency, isProcessing, error: conversionError, result } = useCurrencyConverter()
 
   const [isFormDirty, setIsFormDirty] = useState<boolean>(false)
@@ -19,6 +20,7 @@ export const CurrencyExchange = () => {
   const [selectedFromCurrency, setSelectedFromCurrency] = useState<Currency | undefined>(undefined)
   const [selectedToCurrency, setSelectedToCurrency] = useState<Currency | undefined>(undefined)
   // Minor comment - could be worth to start thinking about using useReducer to avoid subsequent setState ops (even if they are batched under the hood)
+  // However I will keep it simple and avoid over engineering it
 
   const handleAmountChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setIsFormDirty(true)

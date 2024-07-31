@@ -1,5 +1,5 @@
 import { createContext, ReactElement } from 'react'
-import { useCurrenciesApi } from '../hooks/use-currency-api'
+import { useCurrencyData } from '../hooks/use-currency-data'
 
 import { Currency } from '../types/currency.types'
 
@@ -18,7 +18,7 @@ type CurrenciesProviderProps = {
 }
 
 export const CurrenciesProvider = ({ apiKey, children }: CurrenciesProviderProps) => {
-  const currenciesData = useCurrenciesApi({ apiKey })
+  const currenciesData = useCurrencyData({ apiKey })
 
   return <CurrenciesContext.Provider value={currenciesData}>{children}</CurrenciesContext.Provider>
 }

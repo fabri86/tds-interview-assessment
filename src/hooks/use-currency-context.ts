@@ -1,7 +1,7 @@
 import { useContext } from 'react'
 import { CurrenciesContext } from '../components/currencies-provider'
 
-export const useCurrencies = () => {
+export const useCurrencyContext = () => {
   const context = useContext(CurrenciesContext)
 
   if (!context) {

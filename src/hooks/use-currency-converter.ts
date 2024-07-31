@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react'
 import axios from 'axios'
 import { APP_CONFIGS } from '../app-config'
 
-const CONVERT = 'convert'
+const CONVERT = '/convert'
 
 type CurrencyConversionResult = {
   amount: number
@@ -11,7 +11,7 @@ type CurrencyConversionResult = {
   convertedAmount: number
 }
 
-type ApiCallParams = {
+type CurrencyConverterParams = {
   amount: number
   fromCurrency: string
   toCurrency: string
@@ -23,12 +23,12 @@ export const useCurrencyConverter = () => {
   const [result, setResult] = useState<CurrencyConversionResult | null>(null)
 
   const convertCurrency = useCallback(
-    async ({ amount, fromCurrency, toCurrency }: ApiCallParams) => {
+    async ({ amount, fromCurrency, toCurrency }: CurrencyConverterParams) => {
       setIsProcessing(true)
       setError(null)
 
       try {
-        const response = await axios.get(`${APP_CONFIGS.CURRENCIES_API}/${CONVERT}`, {
+        const response = await axios.get(`${APP_CONFIGS.CURRENCIES_API}${CONVERT}`, {
           params: {
             amount,
             from: fromCurrency,

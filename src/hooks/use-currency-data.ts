@@ -6,7 +6,7 @@ import { Currency } from '../types/currency.types'
 
 const CURRENCIES = '/currencies'
 
-type UseCurrencyApiParams = {
+type UseCurrencyDataParams = {
   apiKey: string
 }
 
@@ -14,7 +14,7 @@ interface IApiResponse {
   response: Currency[]
 }
 
-export const useCurrenciesApi = ({ apiKey }: UseCurrencyApiParams) => {
+export const useCurrencyData = ({ apiKey }: UseCurrencyDataParams) => {
   const [currencies, setCurrencies] = useState<Currency[]>([])
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [loadingError, setLoadingError] = useState<string | null>(null)
