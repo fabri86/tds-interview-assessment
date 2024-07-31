@@ -10,3 +10,8 @@ export type Currency = {
   decimal_mark: string
   thousands_separator: string
 }
+
+export enum AmountWithCurrencySelectorIds {
+  FROM = 'from',
+  TO = 'to',
+}

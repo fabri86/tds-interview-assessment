@@ -1,15 +1,18 @@
-import { Currency } from '../types/currency.types'
+import { AmountWithCurrencySelectorIds, Currency } from '../types/currency.types'
 import clsx from 'clsx'
+
+const getLabelContent = (id: string) =>
+  `${id === AmountWithCurrencySelectorIds.FROM ? 'Your' : 'Converted'} amount`
 
 type AmountWithCurrencyProps = {
   amount: string
   currencies: Currency[]
-  selectedCurrency: Currency | null
-  onSetCurrency: (e: React.ChangeEvent<HTMLSelectElement>) => void
-  onAmountChanged?: (e: React.ChangeEvent<HTMLInputElement>) => void
+  id: string
   isAmountInputDisabled?: boolean
   isProcessing: boolean
-  id: string
+  onSetCurrency: (e: React.ChangeEvent<HTMLSelectElement>) => void
+  onAmountChanged?: (e: React.ChangeEvent<HTMLInputElement>) => void
+  selectedCurrency: Currency | undefined
 }
 
 export const AmountWithCurrency = ({
@@ -23,17 +26,16 @@ export const AmountWithCurrency = ({
   id,
 }: AmountWithCurrencyProps) => {
   return (
-    <div className="flex h-full gap-x-4">
+    <div className="flex h-full text-base gap-x-4">
       <div className="flex flex-col">
-        <label className="my-1 text-base text-white">
-          {id === 'from' ? 'Insert' : 'Converted'} amount
-        </label>
+        <label className="my-1 text-white">{getLabelContent(id)}</label>
+
         <input
           id={`${id}-amount-input`}
           aria-label={`insert ${id} amount`}
           className={clsx('h-6 px-2 bg-white rounded-sm', {
             '!bg-green-200': isAmountInputDisabled,
-            'bg-gray-200': isProcessing,
+            '!bg-gray-200': isProcessing,
           })}
           disabled={isAmountInputDisabled}
           onChange={onAmountChanged}
@@ -43,7 +45,7 @@ export const AmountWithCurrency = ({
       </div>
 
       <div className="flex flex-col">
-        <label className="my-1 text-base text-white">Currency</label>
+        <label className="my-1 text-white">Currency</label>
         <select
           id={`${id}-currency-selector`}
           aria-label={`select-${id}-currency`}
