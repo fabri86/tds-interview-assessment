@@ -5,7 +5,12 @@ import clsx from 'clsx'
 import { useCurrencyContext } from '../hooks/use-currency-context'
 import { AmountWithCurrency } from './amount-with-currency'
 import { useCurrencyConverter } from '../hooks/use-currency-converter'
-import { AmountWithCurrencySelectorIds, Currency } from '../types/currency.types'
+import {
+  AmountWithCurrencySelectorIds,
+  Currency,
+  CurrencyConversionResult,
+} from '../types/currency.types'
+import { RecentConversions } from './recent-conversions'
 
 // Utility func to keep it DRY and facilitate unit testing
 const findCurrency = (currencies: Currency[], currencyShortCode: string): Currency | undefined =>
@@ -21,6 +26,7 @@ export const CurrencyExchange = () => {
   const [selectedToCurrency, setSelectedToCurrency] = useState<Currency | undefined>(undefined)
   // Minor comment - could be worth to start thinking about using useReducer to avoid subsequent setState ops (even if they are batched under the hood)
   // However I will keep it simple and avoid over engineering it
+  const [recentConversions, setRecentConversions] = useState<CurrencyConversionResult[]>([])
 
   const handleAmountChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setIsFormDirty(true)
@@ -67,6 +73,18 @@ export const CurrencyExchange = () => {
     setSelectedFromCurrency(currencies?.[0])
     setSelectedToCurrency(currencies?.[0])
   }, [currencies])
+
+  useEffect(() => {
+    const lastInserted = recentConversions?.[0]
+
+    if (result && result !== lastInserted) {
+      const firstFourItems = recentConversions.slice(0, 4)
+
+      console.log({ firstFourItems })
+
+      setRecentConversions([result, ...firstFourItems])
+    }
+  }, [result, recentConversions])
 
   useEffect(() => {
     if (result && conversionError) {
@@ -120,6 +138,8 @@ export const CurrencyExchange = () => {
           {isProcessing ? 'Converting...' : 'Convert'}
         </button>
       </div>
+
+      <RecentConversions items={recentConversions} showMax={5} />
     </div>
   )
 }

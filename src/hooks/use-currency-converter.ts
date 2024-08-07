@@ -1,15 +1,9 @@
 import { useState, useCallback } from 'react'
 import axios from 'axios'
 import { APP_CONFIGS } from '../app-config'
+import { CurrencyConversionResult } from '../types/currency.types'
 
 const CONVERT = '/convert'
-
-type CurrencyConversionResult = {
-  amount: number
-  fromCurrency: string
-  toCurrency: string
-  convertedAmount: number
-}
 
 type CurrencyConverterParams = {
   amount: number

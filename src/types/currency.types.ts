@@ -15,3 +15,10 @@ export enum AmountWithCurrencySelectorIds {
   FROM = 'from',
   TO = 'to',
 }
+
+export type CurrencyConversionResult = {
+  amount: number
+  fromCurrency: string
+  toCurrency: string
+  convertedAmount: number
+}
