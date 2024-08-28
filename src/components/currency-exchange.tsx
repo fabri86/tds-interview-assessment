@@ -80,8 +80,6 @@ export const CurrencyExchange = () => {
     if (result && result !== lastInserted) {
       const firstFourItems = recentConversions.slice(0, 4)
 
-      console.log({ firstFourItems })
-
       setRecentConversions([result, ...firstFourItems])
     }
   }, [result, recentConversions])
